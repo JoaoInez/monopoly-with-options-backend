@@ -1,14 +1,15 @@
 import { Schema, Document, model } from "mongoose";
-import { playerSchema, IPlayer } from "./player";
 
 export interface IRoom extends Document {
   code: string;
-  players: IPlayer[];
+  players: string[];
+  connected: string[];
 }
 
 const roomSchema = new Schema({
   code: String,
-  players: [playerSchema],
+  players: [String],
+  connected: [String],
 });
 
 export default model<IRoom>("Room", roomSchema);

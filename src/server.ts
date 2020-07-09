@@ -5,9 +5,9 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
-import { createRoom, checkRoom } from "./controllers/rest";
+import { createRoom, checkRoom, getAvailableIcons } from "./controllers/rest";
 import { createPlayer } from "./controllers/rest/player";
-import { joinRoom } from "./controllers/sockets";
+import { joinRoom, leaveRoom } from "./controllers/sockets";
 import withSockets from "./utils/withSockets";
 
 const PORT = 3001;
@@ -28,10 +28,11 @@ app.use(cookieParser());
 app.post("/room", createRoom);
 app.get("/room/:code", checkRoom);
 app.post("/player", createPlayer);
+app.get("/icons/:code", getAvailableIcons);
 
 io.on("connection", (socket) => {
   socket.on("join-room", withSockets(io, socket, joinRoom));
-  socket.on("disconnect", () => {}); //TODO
+  socket.on("disconnect", withSockets(io, socket, leaveRoom));
 });
 
 mongoose.connect(
