@@ -15,6 +15,6 @@ export const createPlayer = async (req: Request, res: Response) => {
       .cookie("room", code)
       .send({ playerId: player.id });
   } catch (error) {
-    console.log("error");
+    console.log("createPlayer error");
   }
 };

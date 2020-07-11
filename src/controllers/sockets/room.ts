@@ -10,19 +10,20 @@ export const joinRoom = async (
   try {
     const room = await Room.findOne({ code }).exec();
 
-    const player: TPlayer = await Player.findById(
-      playerId,
-      "name icon banker money -_id"
-    ).exec();
+    const player = await Player.findById(playerId).exec();
+
+    player.socketId = socket.id;
+
+    await player.save();
 
     const otherPlayers = await mapAsync<OtherPlayer>(
       room.connected.filter((id) => id !== playerId)
     )(async (_playerId) => {
       try {
-        const { id, name, banker, icon } = await Player.findById(_playerId);
-        return { id, name, banker, icon };
+        const { id, name, icon } = await Player.findById(_playerId);
+        return { id, name, icon };
       } catch (error) {
-        console.log("error");
+        console.log("joinRoom find other players error");
       }
     });
 
@@ -32,14 +33,18 @@ export const joinRoom = async (
     await room.save();
 
     socket.join(code);
-    io.to(socket.id).emit("game", player, otherPlayers);
+    io.to(socket.id).emit(
+      "game",
+      { icon: player.icon, name: player.name, money: player.money },
+      otherPlayers
+    );
     socket.broadcast.to(code).emit("player-join", {
       id: playerId,
       name: player.name,
-      banker: player.banker,
+      icon: player.icon,
     });
   } catch (error) {
-    console.log("error");
+    console.log("joinRoom error");
   }
 };
 
@@ -53,6 +58,6 @@ export const leaveRoom = async ({ io, socket }: SocketObject) => {
     await room.save();
     socket.broadcast.to(code).emit("player-leave", playerId);
   } catch (error) {
-    console.log("error");
+    console.log("leaveRoom error");
   }
 };

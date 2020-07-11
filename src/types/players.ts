@@ -11,13 +11,14 @@ export type Icon =
 export type Player = {
   icon: Icon;
   name: string;
-  banker: boolean;
   money: number;
+  savings: number;
+  loan: number;
+  installment: number;
 };
 
 export type OtherPlayer = {
   id: any;
   icon: Icon;
   name: string;
-  banker: boolean;
 };

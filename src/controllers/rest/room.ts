@@ -11,7 +11,7 @@ export const createRoom = async (req: Request, res: Response) => {
     await room.save();
     res.send({ code });
   } catch (error) {
-    console.log("error");
+    console.log("createRoom error");
   }
 };
 
@@ -24,7 +24,7 @@ export const checkRoom = async (req: Request, res: Response) => {
       ? res.status(201).send()
       : res.status(404).send();
   } catch (error) {
-    console.log("error");
+    console.log("checkRoom error");
   }
 };
 
@@ -48,7 +48,7 @@ export const getAvailableIcons = async (req: Request, res: Response) => {
         const { icon } = await Player.findById(id);
         return icon;
       } catch (error) {
-        console.log("error");
+        console.log("getAvailableIcons find players icons error");
       }
     });
 
@@ -56,6 +56,6 @@ export const getAvailableIcons = async (req: Request, res: Response) => {
 
     res.send({ availableIcons });
   } catch (error) {
-    console.log("error");
+    console.log(" getAvailableIconserror");
   }
 };
